@@ -72,18 +72,20 @@ async function CrackExeFile(ExePath, PatchOption) {
     console.log('Done!');
 }
 
-const FilesToProcess = ['Bandizip.exe', 'Bandizip.x64.exe', 'Bandizip.x86.exe'];
+const FilesToProcess = ['Bandizip.exe', 'Bandizip.x64.exe', 'Bandizip.x86.exe', 'Bandizip_x64.exe', 'Bandizip_x86.exe', 'Bandizip-x64.exe', 'Bandizip-x86.exe'];
 let Missing = 0;
 
-await Promise.all(FilesToProcess.map(File => 
-    CrackExeFile(File, '1').catch(Error => {
-        if (Error.message.includes('Not found:')) return Missing++;
-        console.error(`Error (${File}): ${Error.message}`);
-        process.exit(1);
-    });
-}));
+(async () => {
+    await Promise.all(FilesToProcess.map(File => 
+        CrackExeFile(File, '1').catch(Error => {
+            if (Error.message.includes('Not found:')) return Missing++;
+            console.error(`Error (${File}): ${Error.message}`);
+            process.exit(1);
+        });
+    }));
 
-if (Missing === FilesToProcess.length) {
-    console.error('Error: Not found any .exe files!');
-    process.exit(1);
-}
+    if (Missing === FilesToProcess.length) {
+        console.error('Error: Not found any .exe files!');
+        process.exit(1);
+    }
+})();
